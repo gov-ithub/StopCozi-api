@@ -1,0 +1,12 @@
+language: java
+jdk: oraclejdk8
+cache:
+  directories:
+  - "$HOME/.m2"
+deploy:
+  provider: heroku
+  api_key:
+    secure: bt4F5vzocFkBQaj8HN85c1ehZTcoYGKJlSPAqRKlCnJL6Uo3q9rR3b5tFDAs1Y6BkB+VanyTDsnU6t7qykrvvwDvj9EFks+eJk8zkr4IOsQmPl8+mTWnmxgWC89UMLgWeqfzgyInJkBp638K+Ja1Q+Ulylf6ojDVXwVY3S6Eir+cEsoFNbAITqiHuPJ5o3MK52eXlKMLuRLwrzInekPJ42TI/fMthEU7xuNsvp167JumamYcIT+Vy+YkyG+jhnZbhefvef+RLFMEUbgExHhILKc0x8vW+ODYpPtvwaPxYwGTiX3NdLBj+0znsSVnDVMdlXe8PEGYB1pslR61ECWEn5NiOkQnHLziDpEIkOZCFlDutWVYTJ3DY1r6dz0UDR2fqSBRtKF4+kE5eq9ygj+CQX+kNnfAdsLkyNblhRxyI3jRRiBpF65BbprmbODRwMH750FcoJ5Su9gMip5wapHz8uA/wUfq3q6ayf/9b2RwjILOw4sNhf5mRCchGv/XMthRWq8tTrKq+V7JtbUaen34vlTlPCPWlmJa9JmKqZ0Mgu+GC4HSxN0ETtx0MnL79xgxl012uIarPIOm97EX/BVdHgcD6wIBSHBj47jyyh9N/ckVmxJ5ii/HCGfTXD6GSN/mubSAEGEKG43IDXgNE2wrAYavNTOir5TQSMDJpSvGigk=
+  app: yoyosan-stopcozi-api
+  on:
+    repo: yoyosan/StopCozi-api

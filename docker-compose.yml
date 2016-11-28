@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  api:
+    image: maven:latest
+    ports:
+      - "${API_PORT}:8080"
+      - "${API_ADMIN_PORT}:8081"
+    expose:
+      - "8080"
+      - "8081"
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    entrypoint: ''
+    command: ./start.sh
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - /opt/mysql/data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+     MYSQL_DATABASE: ${MYSQL_DATABASE}
+     MYSQL_USER: ${MYSQL_USER}
+     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+

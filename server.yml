@@ -1,0 +1,12 @@
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+  user: ${MYSQL_USER:-stopcozi}
+  password: ${MYSQL_PASSWORD:-stopcozi}
+  url: jdbc:mysql://db:3306/${MYSQL_DATABASE:-stopcozi}?autoReconnect=true&useSSL=false
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081

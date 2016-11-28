@@ -1,0 +1,8 @@
+target/
+.env
+.classpath
+.project
+.settings
+.idea
+StopCozi-api.iml
+dependency-reduced-pom.xml
