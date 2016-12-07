@@ -19,4 +19,8 @@ public class AgencyDao extends AbstractDAO<Agency> {
 
         return persistedAgency.getInternalId();
     }
+
+    public Agency findById(Long id) {
+        return get(id);
+    }
 }
