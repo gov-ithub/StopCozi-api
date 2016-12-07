@@ -13,8 +13,12 @@ import javax.ws.rs.core.Response;
 @Singleton
 public class AgenciesApiImpl implements AgenciesApi{
 
-    @Inject
     private AgencyDao agencyDao;
+
+    @Inject
+    public AgenciesApiImpl(AgencyDao agencyDao) {
+        this.agencyDao = agencyDao;
+    }
 
     @Override
     @UnitOfWork
