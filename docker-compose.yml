@@ -18,11 +18,15 @@ services:
       - db
     links:
       - db
+    environment:
+     MYSQL_DATABASE: ${MYSQL_DATABASE}
+     MYSQL_USER: ${MYSQL_USER}
+     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   db:
     image: mysql:5.7
     volumes:
-      - /opt/mysql/data:/var/lib/mysql
+      - ~/opt/mysql-api:/var/lib/mysql
     ports:
       - "3307:3306"
     restart: always
