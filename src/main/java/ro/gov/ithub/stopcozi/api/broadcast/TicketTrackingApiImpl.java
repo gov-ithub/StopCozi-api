@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 
 @Singleton
-public class TicketTrackingApiImpl implements TicketTrackingApi{
+public class TicketTrackingApiImpl implements TicketTrackingApi {
     @Inject
     private AgencyDao agencyDao;
     
