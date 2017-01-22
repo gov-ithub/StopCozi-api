@@ -118,6 +118,7 @@
                 <version>2.2.1</version>
                 <executions>
                     <execution>
+                    <?m2e execute onConfiguration?>
                         <id>generate-server-classes</id>
                         <phase>generate-sources</phase>
                         <goals>

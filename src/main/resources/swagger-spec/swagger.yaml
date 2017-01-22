@@ -14,9 +14,199 @@ tags:
     description: Operatiune de stabilire a starii unei locatii
   - name: activitate
     description: Operatiuni de comunicare a operatiunilor legate de bonuri
+  - name: cautare
+    description: Operatiuni de cautare a agentiilor sau serviciilor
+  - name: info
+    description: Operatiuni de redare a starii unui serviciu/bon 
+    
 schemes:
   - http
 paths:
+  '/ticketTracking/search/serviceSuggestions':
+    get:
+      tags:
+        - cautare
+      operationId: getServiceSuggestions
+      summary: Sugereaza servicii in functie de cuvintele introduse - TBD si dupa istoria cautarilor/cautari populare
+      produces:
+        - application/json
+      parameters:
+        - name: searchText
+          in: query
+          required: false
+          type: string
+          description: string-ul dupa care face utilizatorul cautarea de servicii
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int64
+          description: numarul maxim de sugestii care vor fi returnate
+      responses:
+        '200':
+          description: Au fost returnate servicii
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GeneralService"
+        '404':
+          description: Nu s-au gasit servicii
+        '409':
+          description: Informatii lipsa  
+  '/ticketTracking/search/services':
+    get:
+      tags:
+        - cautare
+      operationId: getServices
+      summary: Reda rezultatele cautarii dupa anumite cuvinte introduse de utilizator
+      produces:
+        - application/json
+      parameters:
+        - name: searchText
+          in: query
+          required: false
+          type: string
+          description: string-ul dupa care face utilizatorul cautarea de servicii
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int64
+          description: numarul maxim de rezultate care vor fi returnate
+      responses:
+        '200':
+          description: Au fost returnate servicii
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/GeneralService"
+        '404':
+          description: Nu s-au gasit servicii
+        '409':
+          description: Informatii lipsa    
+  '/ticketTracking/search/agencySuggestionsByLocation':
+    get:
+      tags:
+        - cautare
+      operationId: getAgencySuggestions
+      summary: Sugereaza agentii din apropiere care ofera serviciul selectat 
+      produces:
+        - application/json
+      parameters:
+        - name: serviceId
+          in: query
+          required: true
+          type: integer
+          format: int64
+          description: serviciul pentru care se cauta agentii
+        - name: searchText
+          in: query
+          required: false
+          type: string
+          description: locatia device-ului de pe care se face interogarea sau locatia introdusa de utilizator
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int64
+          description: numarul maxim de sugestii care vor fi returnate
+      responses:
+        '200':
+          description: Au fost returnate agentii
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Agency"
+        '404':
+          description: Nu s-au gasit agentii in apropiere
+        '409':
+          description: Informatii lipsa
+  '/ticketTracking/search/{serviceId}':
+    get:
+      tags:
+        - cautare
+      operationId: getServiceAgencies
+      summary: Reda agentii care ofera serviciul selectat
+      produces:
+        - application/json
+      parameters:
+        - name: serviceID
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: id-ul serviciului general din tabela de mapare interna
+        - name: inputString
+          in: query
+          required: false
+          type: string
+          description: cuvintele de cautare introduse de utilizator
+        - name: deviceLocation
+          in: query
+          required: false
+          type: array
+          items:
+            type: number
+            format: float
+          description: locatia device-ului de pe care se face interogarea
+        - name: radius
+          in: query
+          required: false
+          type: integer
+          format: int64
+          description: raza pe care sa se faca cautarea
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int64
+          description: numarul maxim de sugestii care vor fi returnate
+      responses:
+        '200':
+          description: Au fost returnate agentii
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Agency"
+        '404':
+          description: Nu s-au gasit agentii in apropiere
+        '409':
+          description: Informatii lipsa
+  '/ticketTracking/details/{serviceId}/{agencyId}':
+    get:
+      tags:
+        - info
+      operationId: getServiceAgencyDetails
+      summary: Returneaza starea bonurilor de la serviciul si agentia selectata
+      produces:
+        - application/json
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: id-ul serviciului general din tabela de mapare interna
+        - name: agencyId
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: id-ul agentiei selectate
+        - name: ticketId
+          in: query
+          required: false
+          type: string
+          description: tichetul care se urmareste
+      responses:
+        '200':
+          description: Au fost returnate detaliile
+          schema:
+              $ref: "#/definitions/ServiceMetrics"
+        '404':
+          description: Nu exista statistici disponibile
+        '409':
+          description: Informatii lipsa                        
   '/agencies/{agencyId}':
     put:
       tags:
@@ -163,6 +353,29 @@ definitions:
         type: string
       name:
         type: string
+  GeneralService:
+    type: object
+    required:
+      - id
+      - name
+      - description
+      - onlyOnHomeAddress 
+    properties:
+      id:
+        type: string
+        description: Id-ul serviciului general ca denumire (din tabela de mapare interna)
+      name:
+        type: string
+        description: Numele serviciului
+      description:
+        type: string
+        description: descrierea serviciului - cea care trebuie sa apara sub nume
+      iconLink:
+        type: string
+        description: link-ul catre pictograma serviciului
+      onlyOnHomeAddress:
+        type: boolean
+        description: Marcheaza daca serviciul este arondat (se poate face doar la o agentie de la adresa din buletin) sau nu    
   Service:
     type: object
     required:
@@ -193,6 +406,30 @@ definitions:
       lastIssuedTicket:
         type: string
         description: Ultimul bon emis
+  ServiceMetrics:
+    type: object
+    required:
+      - ticketsInQueue
+    properties:
+      ticketsInQueue:
+        type: integer
+        format: int64
+        description: Numarul de bonuri in asteptare
+      averageWaitingTime:
+        type: integer
+        format: int64
+        description: Timpul mediu de asteptare in minute
+      averageProcessingTime:
+        type: integer
+        format: int64
+        description: Timpul mediu de procesare (in minute) al unui tichet
+      availableTickets:
+        type: integer
+        format: int64
+        description: Cate bonuri se mai pot emite in ziua respectiva pt acel serviciu
+      ticketMetrics:
+        schema:
+          $ref: '#/definitions/Ticket'       
   Desk:
     type: object
     required:
@@ -228,9 +465,28 @@ definitions:
       serviceId:
         type: string
         description: Serviciul pentru care a fost emis bonul
-      deskId:
+      deskIds:
+        type: array
+        items:
+          type: integer
+          format: int64
+        description: Ghiseele care pot procesa bonul
+      estimatedProcessTime:
         type: string
-        description: Ghiseul catre care a fost directionat bonul
+        format: 'date-time'
+        description: Ora estimata la care se va procesa bonul
+      ticketsAhead:
+        type: integer
+        format: int64
+        description: Numarul de bonuri emise anterior bonului in cauza si neprocesate
+      averageWaitingTime:
+        type: integer
+        format: int64
+        description: Timpul mediu de asteptare (in minute) pentru bonul in cauza
+      averageProcessingTime:
+        type: integer
+        format: int64
+        description: Timpul mediu de procesare (in minute) al bonului in cauza
   TicketStatus:
     type: string
     enum:
@@ -270,7 +526,6 @@ definitions:
     description: Zilele saptamanii
   Location:
     type: object
-    description: Locatia GPS
     required:
       - lat
       - lng
